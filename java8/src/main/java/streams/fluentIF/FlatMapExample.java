@@ -14,6 +14,7 @@ public class FlatMapExample {
     }
 
     private static <T>Stream<List<T>> mul(List<T> arg0, List<T> arg1){
-        return arg0.stream().flatMap(fst -> arg1.stream().map(snd -> Arrays.asList(fst,snd)));
+        return arg0.stream()
+                .flatMap(fst -> arg1.stream().map(snd -> Arrays.asList(fst,snd)));
     }
 }
