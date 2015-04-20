@@ -1,4 +1,4 @@
-package streams.fluentIF;
+package streams.flatMap;
 
 import java.util.Arrays;
 import java.util.List;
