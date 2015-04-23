@@ -13,7 +13,7 @@ public class HttpUtils {
         byte[] buff = new byte[8192];
         int headerLen = 0;
         while (true){
-            int count = in.read(buff);
+            int count = in.read(buff,headerLen,buff.length - headerLen);
             if(count<0){
                 throw new RuntimeException("Incoming connection close");
             }else {
@@ -28,7 +28,15 @@ public class HttpUtils {
         }
     }
 
+    // \r \n end of request two time
     private static boolean isRequestEnd(byte[] buff, int headerLen) {
-        return false;
+        if(headerLen <4){
+            return false;
+        }
+        return buff[headerLen-4] == '\r' &&
+                buff[headerLen-3] == '\n' &&
+                buff[headerLen-2] == '\r' &&
+                buff[headerLen-1] == '\n';
+
     }
 }

@@ -11,33 +11,38 @@ import java.nio.charset.Charset;
 import java.util.Date;
 
 /**
- * port 0..1024 reserv
+ * port 0..1024 reserve
  * localhost:8080
  * all :80
  * 127.0.0.1
  * 127.0.0.2
  * 127.0.0.3
+ *
+ * Host: one site for many users
+ * headers http:
  */
 public class Server10 {
     private static final Charset US_ASCII = Charset.forName("us-ascii");
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(80);
+        ServerSocket serverSocket = new ServerSocket(8080);
         while(true){
-            System.out.println("wait for TCP-connection ...");
+            System.err.println("wait for TCP-connection ...");
             // todo: что происходит при accept?
             // todo: опишите попакетно TCP handshake
             Socket socket = serverSocket.accept();
-            System.out.println("get one!");
+            System.err.println("get one!");
             try (InputStream in = socket.getInputStream();
-            OutputStream out = socket.getOutputStream()){
+            OutputStream err = socket.getOutputStream()){
                 // READ request
                 byte[] request = HttpUtils.readRequestFully(in);
-                System.out.println("  - - - - - - - - - - ");
-                System.out.println(new String(request, US_ASCII));
-                System.out.println("  - - - - - - - - - - ");
+                System.err.println("  - - - - - - - - - - ");
+                System.err.print(new String(request, US_ASCII));
+                System.err.println("  - - - - - - - - - - ");
                 // WRITE response
                 byte[] response = new Date().toString().getBytes(US_ASCII);
+                err.write(response);
+                err.flush();
             } finally {
                 socket.close();
             }
