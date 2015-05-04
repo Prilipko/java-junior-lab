@@ -4,13 +4,19 @@ package myHttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.*;
@@ -45,10 +51,14 @@ public class MyHttpClient {
 //            response1.close();
 //        }
 
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(1 * 1000).build();
+        httpclient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
+
+//        httpclient = HttpClients.createDefault();
         for(int i= 0;i<2;i++) {
-            httpclient = HttpClients.createDefault();
+
             HttpPost httpPost = new HttpPost("http://localhost:8080");
-            httpPost.addHeader("Connection","keep-alive");
+//            HttpPost httpPost = new HttpPost("http://google.com");
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("username", "вг"));
             nvps.add(new BasicNameValuePair("password", "аб"));
@@ -58,17 +68,20 @@ public class MyHttpClient {
             try {
                 System.out.println(response2.getStatusLine());
                 HttpEntity entity2 = response2.getEntity();
-                byte[] content = new byte[(int) entity2.getContentLength()];
-                entity2.getContent().read(content);
-                System.out.println(new String(content, "UTF-8"));
+                if(entity2.getContentLength() >0) {
+                    byte[] content = new byte[(int) entity2.getContentLength()];
+                    entity2.getContent().read(content);
+                    System.out.println(new String(content, "UTF-8"));
+                }
                 // do something useful with the response body
                 // and ensure it is fully consumed
                 EntityUtils.consume(entity2);
             } finally {
                 response2.close();
-                httpclient.close();
+
             }
         }
+        httpclient.close();
 
         httpclient = HttpClients.createDefault();
 

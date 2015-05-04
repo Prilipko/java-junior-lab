@@ -17,8 +17,9 @@ import java.util.concurrent.Executors;
  */
 public class SunHttpServer {
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8080), 2);
-        server.setExecutor(Executors.newFixedThreadPool(5));
+        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8080),0);
+
+//        server.setExecutor(Executors.newFixedThreadPool(5));
 
         HttpContext context = server.createContext("/", new GlobalHandler());
         context.getFilters().add(new GlobalFilter());
