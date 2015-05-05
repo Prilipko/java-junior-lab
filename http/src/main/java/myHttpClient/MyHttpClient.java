@@ -22,6 +22,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,83 +30,77 @@ import java.util.List;
  */
 public class MyHttpClient {
 
-    public static void main(String[] args) throws IOException {
-        CloseableHttpClient httpclient ;//= HttpClients.createDefault();
-//        httpclient.close();
-//        HttpGet httpGet = new HttpGet("http://targethost/homepage");
-//        CloseableHttpResponse response1 = httpclient.execute(httpGet);
-        // The underlying HTTP connection is still held by the response object
-        // to allow the response content to be streamed directly from the network socket.
-        // In order to ensure correct deallocation of system resources
-        // the user MUST call CloseableHttpResponse#close() from a finally clause.
-        // Please note that if response content is not fully consumed the underlying
-        // connection cannot be safely re-used and will be shut down and discarded
-        // by the connection manager.
-//        try {
-//            System.out.println(response1.getStatusLine());
-//            HttpEntity entity1 = response1.getEntity();
-//             do something useful with the response body
-//             and ensure it is fully consumed
-//            EntityUtils.consume(entity1);
-//        } finally {
-//            response1.close();
-//        }
 
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(1 * 1000).build();
-        httpclient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
-
-//        httpclient = HttpClients.createDefault();
-        for(int i= 0;i<2;i++) {
-
-            HttpPost httpPost = new HttpPost("http://localhost:8080");
-//            HttpPost httpPost = new HttpPost("http://google.com");
-            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-            nvps.add(new BasicNameValuePair("username", "вг"));
-            nvps.add(new BasicNameValuePair("password", "аб"));
+    private static String getNewVersionFile(String server,
+                                            String id,
+                                            String companyName,
+                                            String computerName,
+                                            String currentVersion) {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            byte[] endOfAnswer = "</html>".getBytes("UTF-8");
+            HttpPost httpPost = new HttpPost(server);
+            List<NameValuePair> nvps = new ArrayList<>();
+            nvps.add(new BasicNameValuePair("id", id));
+            nvps.add(new BasicNameValuePair("companyName", companyName));
+            nvps.add(new BasicNameValuePair("computerName", computerName));
+            nvps.add(new BasicNameValuePair("version", currentVersion));
             httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-            CloseableHttpResponse response2 = httpclient.execute(httpPost);
-
-            try {
-                System.out.println(response2.getStatusLine());
-                HttpEntity entity2 = response2.getEntity();
-                if(entity2.getContentLength() >0) {
-                    byte[] content = new byte[(int) entity2.getContentLength()];
-                    entity2.getContent().read(content);
-                    System.out.println(new String(content, "UTF-8"));
-                }
-                // do something useful with the response body
-                // and ensure it is fully consumed
-                EntityUtils.consume(entity2);
-            } finally {
-                response2.close();
-
-            }
-        }
-        httpclient.close();
-
-        httpclient = HttpClients.createDefault();
-
-        HttpGet httpget = new HttpGet("http://localhost:8080/setup.exe");
-        CloseableHttpResponse response = httpclient.execute(httpget);
-        try {
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-//                long len = entity.getContentLength();
-                System.out.println(entity.getContentLength());
-                BufferedInputStream bis = new BufferedInputStream(entity.getContent());
-                String filePath = "C:\\Users\\Worker\\Downloads\\autoDownload3.exe";
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                int inByte;
-                while ((inByte = bis.read()) != -1) bos.write(inByte);
-                bos.flush();
-                bis.close();
-                bos.close();
+            try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+                HttpEntity entity = response.getEntity();
+                byte[] content = new byte[1024 * 2];
+                byte[] endOfReceived = new byte[0];
+                int count = 0;
+                do {
+                    count += entity.getContent().read(content, count, content.length - count);
+                    if (count >= endOfAnswer.length) {
+                        endOfReceived = Arrays.copyOfRange(content, count - endOfAnswer.length, count);
+                    }
+                } while (count < content.length && !Arrays.equals(endOfAnswer, endOfReceived));
+                content = Arrays.copyOf(content, count);
                 EntityUtils.consume(entity);
+                return new String(content, "UTF-8");
             }
-        }finally {
-            response.close();
-            httpclient.close();
+        } catch (IOException ignored) {
         }
+        return "";
+    }
+
+    private static void saveFileFromInternet(String url, String path) {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpGet httpget = new HttpGet(url);
+            try (CloseableHttpResponse response = httpclient.execute(httpget)) {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    BufferedInputStream bis = new BufferedInputStream(entity.getContent());
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(new File(path)));
+                    int inByte;
+                    while ((inByte = bis.read()) != -1) bos.write(inByte);
+                    bos.flush();
+                    bis.close();
+                    bos.close();
+                    EntityUtils.consume(entity);
+                }
+            }
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        String newFile = getNewVersionFile("http://test5.sax-reeds.com.ua", "123", "company", "computer", "2");
+        newFile = newFile.replaceAll("</?html>","");
+        System.out.println(newFile);
+        System.out.println("Downloading...");
+
+        File temp = File.createTempFile("newVersionGeC", ".exe");
+        System.out.println("Temp file : " + temp.getAbsolutePath());
+
+        saveFileFromInternet(newFile, temp.getAbsolutePath());
+        System.out.println("Starting...");
+
+        Runtime.getRuntime().exec(temp.getAbsolutePath());
+        System.out.println("OK...");
 
     }
 
