@@ -2,25 +2,19 @@ package myHttpClient;
 
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,13 +32,10 @@ public class MyHttpClient {
                                             String currentVersion) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             byte[] endOfAnswer = "</html>".getBytes("UTF-8");
-            HttpPost httpPost = new HttpPost(server);
-            List<NameValuePair> nvps = new ArrayList<>();
-            nvps.add(new BasicNameValuePair("id", id));
-            nvps.add(new BasicNameValuePair("companyName", companyName));
-            nvps.add(new BasicNameValuePair("computerName", computerName));
-            nvps.add(new BasicNameValuePair("version", currentVersion));
-            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+
+//            HttpPost httpPost = buildUrlEncodedPost(server, id, companyName, computerName, currentVersion);
+            HttpPost httpPost = buildMultipartPost(server, id, companyName, computerName, currentVersion);
+
             try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
                 HttpEntity entity = response.getEntity();
                 byte[] content = new byte[1024 * 2];
@@ -64,6 +55,40 @@ public class MyHttpClient {
         }
         return "";
     }
+
+    private static HttpPost buildUrlEncodedPost(String server,
+                                                String id,
+                                                String companyName,
+                                                String computerName,
+                                                String currentVersion) throws UnsupportedEncodingException {
+        HttpPost httpPost = new HttpPost(server);
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("id", id));
+        nvps.add(new BasicNameValuePair("companyName", companyName));
+        nvps.add(new BasicNameValuePair("computerName", computerName));
+        nvps.add(new BasicNameValuePair("version", currentVersion));
+        httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+        return httpPost;
+    }
+
+    private static HttpPost buildMultipartPost(String server,
+                                               String id,
+                                               String companyName,
+                                               String computerName,
+                                               String currentVersion) throws UnsupportedEncodingException {
+        HttpPost httpPost = new HttpPost(server);
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addTextBody("id", id)
+                .addTextBody("companyName", companyName)
+                .addTextBody("computerName", computerName)
+                .addTextBody("version", currentVersion)
+                .build();
+        httpPost.addHeader("Content-Type", "multipart/form-data");
+        httpPost.setEntity(entity);
+        return httpPost;
+    }
+
 
     private static void saveFileFromInternet(String url, String path) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -89,17 +114,17 @@ public class MyHttpClient {
     public static void main(String[] args) throws IOException {
 
         String newFile = getNewVersionFile("http://test5.sax-reeds.com.ua", "123", "company", "computer", "2");
-        newFile = newFile.replaceAll("</?html>","");
+        newFile = newFile.replaceAll("</?html>", "");
         System.out.println(newFile);
         System.out.println("Downloading...");
 
-        File temp = File.createTempFile("newVersionGeC", ".exe");
-        System.out.println("Temp file : " + temp.getAbsolutePath());
+//        File temp = File.createTempFile("newVersionGeC", ".exe");
+//        System.out.println("Temp file : " + temp.getAbsolutePath());
 
-        saveFileFromInternet(newFile, temp.getAbsolutePath());
+//        saveFileFromInternet(newFile, temp.getAbsolutePath());
         System.out.println("Starting...");
 
-        Runtime.getRuntime().exec(temp.getAbsolutePath());
+//        Runtime.getRuntime().exec(temp.getAbsolutePath());
         System.out.println("OK...");
 
     }
