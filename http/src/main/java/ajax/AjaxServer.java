@@ -71,11 +71,42 @@ public class AjaxServer {
             os.close();
         });
 
+        server.createContext("/upload", t -> {
+
+            String respOk = "ok";
+            String respError = "File too big";
+            byte[] respArray = new byte[0];
+
+            byte[] byteArray = new byte[1000];
+
+            int length = Integer.parseInt(String.valueOf(t.getRequestHeaders().get("Content-Length").get(0)));
+            System.out.println("length = " + length);
+            int received = 0;
+
+            if(length > 1024*1024*50){
+                respArray = respError.getBytes("UTF-8");
+            }else {
+                try (InputStream is = t.getRequestBody()) {
+                    while (received < length) {
+                        received += is.read(byteArray);
+                    }
+                }
+                respArray = respOk.getBytes("UTF-8");
+            }
+
+            t.sendResponseHeaders(200, respArray.length);
+            try (OutputStream os = t.getResponseBody()){
+                os.write(respArray);
+                os.flush();
+            }
+        });
+
 
         server.createContext("/JsonExample.html", t -> htmlHandler(t, "ajax/htmls/JsonExample.html"));
         server.createContext("/JsonExampleAsync.html", t -> htmlHandler(t, "ajax/htmls/JsonExampleAsync.html"));
         server.createContext("/digits.html", t -> htmlHandler(t, "ajax/htmls/digits.html"));
         server.createContext("/JsonTask.html", t -> htmlHandler(t, "ajax/htmls/JsonTask.html"));
+        server.createContext("/upload.html", t -> htmlHandler(t, "ajax/htmls/upload.html"));
 
         server.start();
     }
