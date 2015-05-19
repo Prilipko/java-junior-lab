@@ -26,6 +26,28 @@
         <url-pattern>/findBooks.do</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>MyHttpSessionIdListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyServletContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyServletContextAttributeListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyServletRequestListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyServletRequestAttributeListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyHttpSessionListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>MyHttpSessionAttributeListener</listener-class>
+    </listener>
+
 
     <filter>
         <filter-name>timeFilter</filter-name>
@@ -41,6 +63,7 @@
     </filter-mapping>
 
     <filter>
+
         <filter-name>infoFilter</filter-name>
         <filter-class>RequestInfoFilter</filter-class>
     </filter>
