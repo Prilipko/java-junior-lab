@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Created by Alexander on 20.05.2015.
  */
-@WebServlet(urlPatterns = "/product.do ", name = "ProductController")
+@WebServlet(urlPatterns = "/product.do", name = "ProductController")
 public class ProductController extends HttpServlet {
     public static final String PARAM_ID = "id";
     public static final String ATTRIBUTE_MODEL_TO_VIEW = "product";
