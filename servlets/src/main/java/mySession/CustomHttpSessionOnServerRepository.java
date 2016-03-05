@@ -2,6 +2,7 @@ package mySession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,19 +13,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * todo: realize product bucket to this session implementation
  */
 
-public class CustomHttpSessionOnServerRepository {
-    private final static Map<String, CustomHttpSession> sessions = new ConcurrentHashMap<>();
+public class CustomHttpSessionOnServerRepository implements ShopSessionRepository {
+    public final static String CONTEXT_ATTRIBUTE = "CustomHttpSessionOnServerRepositoryAttribute";
+    private final static Map<String, ShopSession> sessions = new ConcurrentHashMap<>();
 
-    public static CustomHttpSession getSession(String sessionID) {
+    private static ShopSession getSession(String sessionID) {
         return getSession(sessionID, true);
     }
 
-    public static CustomHttpSession getSession(String sessionID, boolean canCreate) {
+    private static ShopSession getSession(String sessionID, boolean canCreate) {
         if (sessions.containsKey(sessionID)) {
             return sessions.get(sessionID);
         } else {
             if (canCreate) {
-                CustomHttpSession newSession = new CustomHttpSession();
+                ShopSession newSession = new MapSession();
                 sessions.put(sessionID, newSession);
                 return newSession;
             } else {
@@ -33,4 +35,22 @@ public class CustomHttpSessionOnServerRepository {
         }
     }
 
+    @Override
+    public ShopSession getSession(HttpServletRequest request, boolean canCreate) {
+        HttpSession session = request.getSession(canCreate);
+        if (session != null) {
+            return getSession(session.getId(), canCreate);
+        }
+        return null;
+    }
+
+    @Override
+    public ShopSession getSession(HttpServletRequest request) {
+        return getSession(request, true);
+    }
+
+    @Override
+    public void saveSession(HttpServletResponse response, ShopSession session) {
+        //NOP
+    }
 }

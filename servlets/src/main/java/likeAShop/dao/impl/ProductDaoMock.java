@@ -32,4 +32,9 @@ public class ProductDaoMock implements ProductDao {
     public List<Product> selectAll() throws DaoSystemException {
         return new ArrayList<Product>(memory.values());
     }
+
+    @Override
+    public boolean containsProductById(int id) throws DaoSystemException {
+        return memory.containsKey(id);
+    }
 }

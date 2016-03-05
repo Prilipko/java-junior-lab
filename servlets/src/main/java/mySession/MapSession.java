@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CustomHttpSession {
+public class MapSession implements ShopSession {
     private final Map<String,Object>impl = new ConcurrentHashMap<>();
 
-    public void putAttribute(String key, Object value){
+    public void setAttribute(String key, Object value){
         impl.put(key, value);
     }
 

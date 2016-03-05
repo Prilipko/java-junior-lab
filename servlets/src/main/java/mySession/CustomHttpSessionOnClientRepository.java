@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
  * todo: realize product bucket to this session implementation
  */
 public class CustomHttpSessionOnClientRepository {
-    public static CustomHttpSession getSession(HttpServletRequest request){
+    public static MapSession getSession(HttpServletRequest request){
         throw new UnsupportedOperationException();
     }
 
-    public static void saveSession(HttpServletResponse response, CustomHttpSession session){
+    public static void saveSession(HttpServletResponse response, MapSession session){
         throw new UnsupportedOperationException();
     }
 }
