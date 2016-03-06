@@ -83,7 +83,7 @@ public class BucketController extends HttpServlet {
             resp.sendError(500, e.getLocalizedMessage());
         }
         String referer = req.getHeader("referer");
-        log.info("referer: " + referer);
+//        log.info("referer: " + referer);
         resp.sendRedirect(referer);
     }
 }

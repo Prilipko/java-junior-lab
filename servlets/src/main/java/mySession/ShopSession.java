@@ -11,4 +11,6 @@ public interface ShopSession {
     Object getAttribute(String key);
 
     Iterator<String> getAttributeNames();
+
+    void resetTime();
 }

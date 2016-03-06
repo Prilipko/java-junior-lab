@@ -1,9 +1,11 @@
 package likeAShop.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by Alexander on 20.05.2015.
  */
-public class Product   {
+public class Product implements Serializable {
     int id;
     String name;
 

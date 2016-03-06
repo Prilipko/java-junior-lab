@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+import static likeAShop.ShopConstants.*;
 
 @WebServlet(urlPatterns = "/shopSessionTest.do", name = "ShopSessionTestServlet")
 public class ShopSessionTestServlet extends HttpServlet {
@@ -19,8 +20,8 @@ public class ShopSessionTestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext sc = req.getServletContext();
-        ShopSessionRepository repository = (ShopSessionRepository) sc.getAttribute(
-                CustomHttpSessionOnServerRepository.CONTEXT_ATTRIBUTE);
+        ShopSessionRepository repository =
+                (ShopSessionRepository) sc.getAttribute(SESSION_PROVIDER);
         if (repository == null) {
             resp.sendError(500, "ShopSessionRepository is null");
             return;
