@@ -5,6 +5,7 @@ import likeAShop.dao.exception.DaoSystemException;
 import likeAShop.dao.exception.NoSuchEntityException;
 import likeAShop.dao.impl.ProductDaoMock;
 import likeAShop.entity.Product;
+import myInject.MyInject;
 import mySession.ShopSession;
 import mySession.ShopSessionRepository;
 
@@ -27,6 +28,8 @@ import static likeAShop.ShopConstants.*;
 public class ProductController extends HttpServlet {
 
     public static final String PAGE_OK = "product.jsp";
+
+    @MyInject("productDao")
     private ProductDao productDao = new ProductDaoMock();
 
     @Override
