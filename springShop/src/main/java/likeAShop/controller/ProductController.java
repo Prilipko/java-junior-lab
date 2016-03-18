@@ -6,6 +6,7 @@ import likeAShop.dao.exception.NoSuchEntityException;
 import likeAShop.dao.impl.ProductDaoMock;
 import likeAShop.entity.Product;
 import myInject.MyInject;
+import myInject.MyInjectServlet;
 import mySession.ShopSession;
 import mySession.ShopSessionRepository;
 
@@ -25,12 +26,13 @@ import static likeAShop.ShopConstants.*;
  * Created by Alexander on 20.05.2015.
  */
 @WebServlet(urlPatterns = "/product.do", name = "ProductController")
-public class ProductController extends HttpServlet {
+public class ProductController extends MyInjectServlet {
 
     public static final String PAGE_OK = "product.jsp";
 
     @MyInject("productDao")
-    private ProductDao productDao = new ProductDaoMock();
+    private ProductDao productDao;
+//    private ProductDao productDao = new ProductDaoMock();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

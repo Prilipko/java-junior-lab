@@ -9,6 +9,15 @@
          version="3.1">
   <display-name>Archetype Created Web Application</display-name>
 
+
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      <!--Why is not looking in resources-->
+      generalApplicationContext.xml
+    </param-value>
+  </context-param>
+
   <jsp-config>
     <jsp-property-group>
       <url-pattern>*.jsp</url-pattern>
