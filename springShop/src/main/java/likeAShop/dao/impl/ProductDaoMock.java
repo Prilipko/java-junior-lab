@@ -4,6 +4,8 @@ import likeAShop.dao.ProductDao;
 import likeAShop.dao.exception.DaoSystemException;
 import likeAShop.dao.exception.NoSuchEntityException;
 import likeAShop.entity.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Alexander on 20.05.2015.
  */
 public class ProductDaoMock implements ProductDao {
+    private static Logger log = LoggerFactory.getLogger(ProductDaoMock.class);
     private final Map<Integer, Product> memory = new ConcurrentHashMap<Integer, Product>();
 
     public ProductDaoMock() {
@@ -23,6 +26,7 @@ public class ProductDaoMock implements ProductDao {
     }
 
     public Product selectById(int id) throws DaoSystemException, NoSuchEntityException {
+        log.info("selectById:" + id + " " + getClass().getSimpleName());
         if (!memory.containsKey(id)) {
             throw new NoSuchEntityException("No product for id = " + id + ", only " + memory.size());
         }
@@ -30,6 +34,7 @@ public class ProductDaoMock implements ProductDao {
     }
 
     public List<Product> selectAll() throws DaoSystemException {
+        log.info("selectAll: " + getClass().getSimpleName());
         return new ArrayList<Product>(memory.values());
     }
 

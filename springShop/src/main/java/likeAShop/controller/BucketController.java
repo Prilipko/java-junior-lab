@@ -5,6 +5,8 @@ import likeAShop.dao.exception.DaoSystemException;
 import likeAShop.dao.exception.NoSuchEntityException;
 import likeAShop.dao.impl.ProductDaoMock;
 import likeAShop.entity.Product;
+import myInject.MyInject;
+import myInject.MyInjectServlet;
 import mySession.ShopSession;
 import mySession.ShopSessionRepository;
 import org.slf4j.Logger;
@@ -24,10 +26,11 @@ import java.util.Map;
 import static likeAShop.ShopConstants.*;
 
 @WebServlet(urlPatterns = "/bucket.do", name = "BucketController")
-public class BucketController extends HttpServlet {
+public class BucketController extends MyInjectServlet {
     private static Logger log = LoggerFactory.getLogger(BucketController.class);
 
-    private ProductDao productDao = new ProductDaoMock();
+    @MyInject("productDao")
+    private ProductDao productDao;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

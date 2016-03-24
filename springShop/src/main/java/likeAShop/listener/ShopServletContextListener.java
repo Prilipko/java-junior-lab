@@ -8,16 +8,19 @@ import mySession.listener.SessionAttributeListener;
 import mySession.listener.SessionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import static likeAShop.ShopConstants.SESSION_PROVIDER;
+import static likeAShop.ShopConstants.*;
 
 @WebListener()
 public class ShopServletContextListener implements ServletContextListener {
+    private static final String APP_CTX_PATH = "contextConfigLocation";
     private static Logger log = LoggerFactory.getLogger(ShopServletContextListener.class);
     ShopSessionRepository sessions;
 
@@ -62,6 +65,10 @@ public class ShopServletContextListener implements ServletContextListener {
                         " in session: " + event.getSession());
             }
         });
+
+        String appCtxPath = sc.getInitParameter(APP_CTX_PATH);
+        ApplicationContext appCtx = new ClassPathXmlApplicationContext(appCtxPath);
+        sc.setAttribute(APP_CTX, appCtx);
 
     }
 

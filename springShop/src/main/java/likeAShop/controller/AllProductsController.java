@@ -4,6 +4,8 @@ import likeAShop.dao.ProductDao;
 import likeAShop.dao.exception.DaoSystemException;
 import likeAShop.dao.impl.ProductDaoMock;
 import likeAShop.entity.Product;
+import myInject.MyInject;
+import myInject.MyInjectServlet;
 import mySession.ShopSession;
 import mySession.ShopSessionRepository;
 import org.slf4j.Logger;
@@ -26,11 +28,13 @@ import static likeAShop.ShopConstants.*;
  * Created by Alexander on 20.05.2015.
  */
 @WebServlet(urlPatterns = "/allProduct.do", name = "AllProductsController")
-public class AllProductsController extends HttpServlet {
+public class AllProductsController extends MyInjectServlet {
     public static  final Logger log = LoggerFactory.getLogger(AllProductsController.class);
     public static final String PAGE_OK = "allProducts.jsp";
 
-    private ProductDao productDao = new ProductDaoMock();
+    @MyInject("productDao")
+    private ProductDao productDao;
+//    private ProductDao productDao = new ProductDaoMock();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

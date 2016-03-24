@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import static likeAShop.ShopConstants.*;
 
 public class MyInjectServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MyInjectServlet.class);
-    private static final String APP_CTX_PATH = "contextConfigLocation";
 
     private List<Field> getFields() {
         List<Field> result = new LinkedList<>();
@@ -42,8 +42,9 @@ public class MyInjectServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         List<Field> fields = filterInjectFields(getFields());
-        String appCtxPath = getServletContext().getInitParameter(APP_CTX_PATH);
-        ApplicationContext appCtx = new ClassPathXmlApplicationContext(appCtxPath);
+//        String appCtxPath = getServletContext().getInitParameter(APP_CTX_PATH);
+//        ApplicationContext appCtx = new ClassPathXmlApplicationContext(appCtxPath);
+        ApplicationContext appCtx = (ApplicationContext) getServletContext().getAttribute(APP_CTX);
         for (Field field : fields) {
             MyInject myInject = field.getAnnotation(MyInject.class);
             String beanName = myInject.value();

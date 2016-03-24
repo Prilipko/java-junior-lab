@@ -11,4 +11,7 @@ public class ShopConstants {
     public static final String PAGE_ERROR = "error.jsp";
 
     public static final String SESSION_PROVIDER = "customSessionRepository";
+
+    public static final String APP_CTX = "appCtx";
+
 }

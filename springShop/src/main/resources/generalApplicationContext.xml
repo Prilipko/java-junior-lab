@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+       >
+
+    <aop:config>
+        <aop:aspect ref="aroundDaoAspect" id="aroundDaoAspectID" order="1">
+            <aop:pointcut expression="execution(* likeAShop.dao.ProductDao.select*(..))" id="enyGetDaoMethods"/>
+            <aop:around method="employeeAroundAdvice" pointcut-ref="enyGetDaoMethods" arg-names="proceedingJoinPoint"/>
+        </aop:aspect>
+    </aop:config>
 
     <bean name="productDao" class="likeAShop.dao.impl.ProductDaoMock"/>
+    <bean id="aroundDaoAspect" class="aspect.AroundDaoAspect"/>
 
 </beans>
