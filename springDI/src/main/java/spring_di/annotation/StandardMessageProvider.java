@@ -1,5 +1,7 @@
 package spring_di.annotation;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import spring_di.MessageProvider;
 
@@ -8,8 +10,17 @@ import spring_di.MessageProvider;
  */
 @Service("messageProvider")
 public class StandardMessageProvider implements MessageProvider {
+    private String message;
+
+    @Autowired
+    public StandardMessageProvider(
+//            @Value("Variable annotation message")
+                                       String message) {
+        this.message = message;
+    }
+
     @Override
     public String getMessage() {
-        return "Hello World!";
+        return message;
     }
 }

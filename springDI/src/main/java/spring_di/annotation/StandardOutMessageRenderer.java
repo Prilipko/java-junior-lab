@@ -1,8 +1,11 @@
 package spring_di.annotation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import spring_di.MessageProvider;
 import spring_di.MessageRenderer;
+
+import javax.annotation.Resource;
 
 /**
  * Created by Worker on 25.03.2016.
@@ -22,6 +25,8 @@ public class StandardOutMessageRenderer implements MessageRenderer {
     }
 
     @Override
+    @Autowired
+//    @Resource(name = "messageProvider")
     public void setMessageProvider(MessageProvider provider) {
         this.messageProvider = provider;
     }

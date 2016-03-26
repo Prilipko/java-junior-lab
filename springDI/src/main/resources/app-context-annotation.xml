@@ -2,14 +2,65 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="spring_di.annotation">
         <context:exclude-filter type="assignable"
                                 expression="spring_di.annotation.NotAService"/>
     </context:component-scan>
+
+    <bean id="message" class="java.lang.String"
+          c:_0="Variable message from xml annotation style"/>
+
+    <bean id="p" class="java.lang.Integer">
+        <constructor-arg type="int" value="50"/>
+    </bean>
+
+    <bean id="byteValue" class="java.lang.Byte" c:_0="1"/>
+    <bean id="shortValue" class="java.lang.Short" c:_0="2"/>
+    <bean id="charValue" class="java.lang.Character" c:_0="c"/>
+    <bean id="intValue" class="java.lang.Integer" c:_0="4"/>
+    <bean id="floatValue" class="java.lang.Float" c:_0="5.6"/>
+    <bean id="doubleValue" class="java.lang.Double" c:_0="7.8"/>
+    <bean id="booleanValue" class="java.lang.Boolean" c:_0="true"/>
+    <bean id="stringValue" class="java.lang.String" c:_0="Hello string"/>
+
+    <!--private int[] ints;-->
+    <!--private List<Double> doubles;-->
+    <!--private Set<Boolean> booleans;-->
+    <!--private Map<Byte, Object> byteObjectMap;-->
+    <!--private Properties properties;-->
+
+    <util:list id="arrayValue">
+        <value>1</value>
+        <value>-2</value>
+        <value>4</value>
+    </util:list>
+
+    <util:list id="listValue">
+        <value>1.9</value>
+        <value>-2.8</value>
+        <value>4.7</value>
+    </util:list>
+
+    <util:set id="setValue">
+        <value>true</value>
+        <value>false</value>
+    </util:set>
+
+    <util:map id="mapValue">
+        <entry key="4" value="Bla bla"/>
+        <entry key="6" value-ref="setValue"/>
+    </util:map>
+
+    <util:properties id="propertiesValue">
+        <prop key="a">ho ho</prop>
+        <prop key="b">lol</prop>
+    </util:properties>
+
 
 </beans>

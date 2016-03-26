@@ -1,10 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd">
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="messageRenderer" class="spring_di.xml.StandardOutMessageRenderer"
+          p:messageProvider-ref="messageProvider"/>
+    <!--<property name="messageProvider" ref="messageProvider"/>-->
+    <!--</bean>-->
 
-    <bean id="messageRenderer" class="spring_di.xml.StandardOutMessageRenderer"/>
-    <bean id="messageProvider" class="spring_di.xml.StandardMessageProvider"/>
+    <bean id="messageProvider" class="spring_di.xml.StandardMessageProvider"
+          c:_0="Variable message"/>
+    <!--<constructor-arg value="Variable message"/>-->
+    <!--</bean>-->
+
+    <bean id="constructorConflict" class="spring_di.xml.ConstructorsConflict"
+          lazy-init="true">
+        <!--c:p="20"/>-->
+        <constructor-arg type="int" value="20"/>
+    </bean>
+
+    <bean id="paramClass" class="spring_di.xml.ParamsClass"
+    >
+        <constructor-arg index="0" type="byte" value="100"/>
+        <constructor-arg index="1" type="short" value="1000"/>
+        <constructor-arg index="2" type="char" value="c"/>
+        <constructor-arg index="3" type="int" value="33000"/>
+        <constructor-arg index="4" type="float" value="7777.8888"/>
+        <constructor-arg index="5" type="double" value="11111111.22222222"/>
+        <constructor-arg index="6" type="boolean" value="false"/>
+        <constructor-arg index="7" type="java.lang.String" value="The string"/>
+        <constructor-arg index="8">
+            <array>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </array>
+        </constructor-arg>
+        <constructor-arg index="9">
+            <list value-type="java.lang.Double">
+                <value>1.2</value>
+                <value>3.4</value>
+                <value>5.6</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="10">
+            <set value-type="java.lang.Boolean">
+                <value>false</value>
+                <value>true</value>
+                <value>false</value>
+                <value>true</value>
+            </set>
+        </constructor-arg>
+        <constructor-arg index="11">
+            <map key-type="java.lang.Byte" value-type="java.lang.Object">
+                <entry key="20" value="Hello"/>
+                <entry key="30" value-ref="messageProvider"/>
+                <!--<entry>-->
+                    <!--<key>40</key>-->
+                    <!--<ref local="constructorConflict"/>-->
+                <!--</entry>-->
+            </map>
+        </constructor-arg>
+        <constructor-arg index="12">
+            <props>
+                <prop key="1">One</prop>
+                <prop key="2">Two</prop>
+                <prop key="3">Three</prop>
+            </props>
+        </constructor-arg>
+    </bean>
+
+    <util:map id="someMap" map-class="java.util.HashMap">
+        <entry key="1" value="dva"/>
+        <entry key="3" value="chetyry"/>
+    </util:map>
+
+    <bean id="paramsSetter" class="spring_di.xml.ParamsClass"
+          p:aByte="#{paramClass.aByte + 1}"
+          p:aShort="#{paramClass.aShort} "
+          p:aChar="#{paramClass.aChar}"
+          p:anInt="#{paramClass.anInt}"
+          p:aFloat="#{paramClass.aFloat}"
+          p:aDouble="#{paramClass.aDouble}"
+          p:aBoolean="#{paramClass.aBoolean}"
+          p:string="#{paramClass.string}"
+          p:ints="#{paramClass.ints}"
+          p:doubles="#{paramClass.doubles}"
+          p:booleans="#{paramClass.booleans}"
+          p:properties="#{paramClass.properties}"
+    >
+        <property name="byteObjectMap" ref="someMap"/>
+    </bean>
+
+    <bean id="childBean" class="java.lang.String" c:_0="Hello from child"/>
+    <bean id="commonBean" class="java.lang.String" c:_0="Hello from child again"/>
+
+    <util:list id="parentList" list-class="java.util.ArrayList">
+        <ref bean="childBean"/>
+        <ref bean="commonBean"/>
+        <ref bean="parentBean"/>
+
+        <ref parent="commonBean"/>
+        <ref parent="parentBean"/>
+    </util:list>
+
 
 </beans>
