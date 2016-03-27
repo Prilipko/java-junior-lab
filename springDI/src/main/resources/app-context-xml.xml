@@ -62,8 +62,8 @@
                 <entry key="20" value="Hello"/>
                 <entry key="30" value-ref="messageProvider"/>
                 <!--<entry>-->
-                    <!--<key>40</key>-->
-                    <!--<ref local="constructorConflict"/>-->
+                <!--<key>40</key>-->
+                <!--<ref local="constructorConflict"/>-->
                 <!--</entry>-->
             </map>
         </constructor-arg>
@@ -110,5 +110,25 @@
         <ref parent="parentBean"/>
     </util:list>
 
+    <bean name="helperReplacer" class="spring_di.HelperReplacer"/>
+
+    <bean id="helper" class="spring_di.Helper" scope="prototype">
+        <replaced-method name="getMessage" replacer="helperReplacer"/>
+    </bean>
+
+    <bean id="standardLookup" class="spring_di.StandardLookup"
+          autowire="constructor"
+    />
+
+    <bean id="singletonUser" name="singletonUser2 singletonUser3 singletonUser4"
+          class="spring_di.SingletonUser"
+          depends-on="helper">
+        <lookup-method name="getHelper" bean="helper"/>
+    </bean>
+    <alias name="singletonUser" alias="singletonUser5"/>
+
+    <bean id="paramChild" class="spring_di.xml.ParamsClass"
+          parent="paramsSetter"
+          p:aByte="55"/>
 
 </beans>
