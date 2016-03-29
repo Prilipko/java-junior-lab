@@ -9,6 +9,11 @@
           <file>file://$MODULE_DIR$/src/main/resources/factory-impl.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/property-editors.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/app-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/java/classConfig/AppConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/resources/kindergarten-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/school-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/env-app-context.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/jsr330-context.xml</file>
         </fileset>
       </configuration>
     </facet>
@@ -31,5 +36,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:4.2.5.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy-all:2.2.2" level="project" />
   </component>
 </module>
