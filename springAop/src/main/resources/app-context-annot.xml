@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       ">
+
+    <context:component-scan base-package="exampleAop.annotation"/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <bean id="modifiedUser" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="interceptorNames">
+            <list>
+                <value>advisor</value>
+            </list>
+        </property>
+        <property name="target">
+            <bean class="exampleAop.annotation.User">
+                <constructor-arg index="0" value="Jon"/>
+                <constructor-arg index="1" value="222"/>
+            </bean>
+        </property>
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+
+
+</beans>
