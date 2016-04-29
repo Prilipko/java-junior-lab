@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+>
+
+    <context:component-scan base-package="likeAShop"/>
+
+    <aop:config>
+        <aop:aspect ref="aroundDaoAspect" id="aroundDaoAspectID" order="1">
+            <aop:pointcut expression="execution(* likeAShop.dao.ProductDao.select*(..))" id="enyGetDaoMethods"/>
+            <aop:around method="employeeAroundAdvice" pointcut-ref="enyGetDaoMethods" arg-names="proceedingJoinPoint"/>
+        </aop:aspect>
+    </aop:config>
+    <bean id="aroundDaoAspect" class="aspect.AroundDaoAspect"/>
+
+    <!--<bean name="productDao" class="likeAShop.dao.impl.ProductDaoMock"/>-->
+    <!--<bean name="productDao" class="likeAShop.dao.impl.ProductDaoJdbc">-->
+        <!--<constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>-->
+    <!--</bean>-->
+    <bean name="productDao" class="likeAShop.dao.impl.ProductDaoDS"/>
+    <bean name="transactionManager" class="likeAShop.tx.impl.TransactionManagerImpl">
+        <constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>
+    </bean>
+
+    <!--<bean name="sessions" class="mySession.CustomHttpSessionOnClientRepository"/>-->
+    <!--<bean name="sessions" class="mySession.CustomHttpSessionOnServerRepository"/>-->
+    <bean name="sessions" class="mySession.NativeHttpSessionRepository">
+        <constructor-arg name="ctx" ref="servletCtx"/>
+    </bean>
+
+
+
+</beans>
