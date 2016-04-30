@@ -14,7 +14,6 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      <!--Why is not looking in resources-->
       generalApplicationContext.xml
     </param-value>
   </context-param>

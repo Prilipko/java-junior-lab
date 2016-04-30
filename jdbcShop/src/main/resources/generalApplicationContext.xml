@@ -3,8 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd"
 >
 
     <context:component-scan base-package="likeAShop"/>
@@ -19,13 +26,12 @@
 
     <!--<bean name="productDao" class="likeAShop.dao.impl.ProductDaoMock"/>-->
     <!--<bean name="productDao" class="likeAShop.dao.impl.ProductDaoJdbc">-->
-        <!--<constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-        <!--<constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>-->
+    <!--<constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+    <!--<constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>-->
     <!--</bean>-->
     <bean name="productDao" class="likeAShop.dao.impl.ProductDaoDS"/>
     <bean name="transactionManager" class="likeAShop.tx.impl.TransactionManagerImpl">
-        <constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>
+        <constructor-arg ref="dataSourceDB"/>
     </bean>
 
     <!--<bean name="sessions" class="mySession.CustomHttpSessionOnClientRepository"/>-->
@@ -34,6 +40,15 @@
         <constructor-arg name="ctx" ref="servletCtx"/>
     </bean>
 
+    <jdbc:embedded-database id="dataSourceDB" type="HSQL">
+        <jdbc:script location="classpath:schema.sql"/>
+        <jdbc:script location="classpath:insert-data.sql"/>
+    </jdbc:embedded-database>
+
+    <!--<bean id="dataSourceDB" class="likeAShop.ds.MySqlDataSource">-->
+        <!--<constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>-->
+    <!--</bean>-->
 
 
 </beans>

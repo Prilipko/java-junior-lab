@@ -4,6 +4,7 @@ import likeAShop.tx.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,15 +13,10 @@ import java.util.concurrent.Callable;
 public class TransactionManagerImpl extends TransactionManager {
 
     private static Logger log = LoggerFactory.getLogger(TransactionManagerImpl.class);
-    final private String jdbcUrl;
+    private DataSource dataSource;
 
-    public TransactionManagerImpl(String driverClassName, String jdbcUrl) {
-        try {
-            Class.forName(driverClassName);
-        } catch (ClassNotFoundException e) {
-            log.error("Can't load jdbc driver", e);
-        }
-        this.jdbcUrl = jdbcUrl;
+    public TransactionManagerImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     private ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
@@ -32,7 +28,7 @@ public class TransactionManagerImpl extends TransactionManager {
 
     @Override
     public <T> T doInTx(Callable<T> operation) throws Exception {
-        try(Connection conn = DriverManager.getConnection(jdbcUrl)) {
+        try(Connection conn = dataSource.getConnection()) {
             try  {
                 connectionThreadLocal.set(conn);
                 conn.setAutoCommit(false);

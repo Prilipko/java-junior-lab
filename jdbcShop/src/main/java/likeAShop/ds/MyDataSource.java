@@ -1,4 +1,4 @@
-package likeAShop.tx;
+package likeAShop.ds;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;

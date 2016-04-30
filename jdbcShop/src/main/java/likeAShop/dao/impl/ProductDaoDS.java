@@ -25,15 +25,16 @@ public class ProductDaoDS implements ProductDao {
 
         try {
             Connection conn = dataSource.getConnection();
-            PreparedStatement prStm = conn.prepareStatement("SELECT name FROM products WHERE id = ?;");
-            prStm.setInt(1, id);
-            ResultSet res = prStm.executeQuery();
-            if (res.next()) {
-                return new Product(id, res.getString("name"));
-            } else {
-                throw new NoSuchEntityException("There is no element with id = " + id);
+            try (PreparedStatement prStm = conn.prepareStatement("SELECT name FROM products WHERE id = ?;")) {
+                prStm.setInt(1, id);
+                try(ResultSet res = prStm.executeQuery()) {
+                    if (res.next()) {
+                        return new Product(id, res.getString("name"));
+                    } else {
+                        throw new NoSuchEntityException("There is no element with id = " + id);
+                    }
+                }
             }
-
         } catch (SQLException e) {
             throw new DaoSystemException("SQLException when id = " + id, e);
         }
@@ -44,13 +45,14 @@ public class ProductDaoDS implements ProductDao {
         log.info("selectAll: " + getClass().getSimpleName());
         try {
             Connection conn = dataSource.getConnection();
-            Statement stm = conn.createStatement();
-            ResultSet res = stm.executeQuery("SELECT id, name FROM products;");
-            List<Product> resultList = new ArrayList<>();
-            while (res.next()) {
-                resultList.add(new Product(res.getInt("id"), res.getString("name")));
+            try (Statement stm = conn.createStatement();
+                 ResultSet res = stm.executeQuery("SELECT id, name FROM products;")) {
+                List<Product> resultList = new ArrayList<>();
+                while (res.next()) {
+                    resultList.add(new Product(res.getInt("id"), res.getString("name")));
+                }
+                return resultList;
             }
-            return resultList;
         } catch (SQLException e) {
             throw new DaoSystemException("SQLException when selectAll", e);
         }
