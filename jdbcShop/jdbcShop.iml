@@ -54,5 +54,7 @@
     <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.8.9" level="project" />
     <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.8.9" level="project" />
     <orderEntry type="library" name="Maven: hsqldb:hsqldb:1.8.0.10" level="project" />
+    <orderEntry type="library" name="Maven: com.jolbox:bonecp:0.8.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:15.0" level="project" />
   </component>
 </module>

@@ -14,7 +14,7 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-      generalApplicationContext.xml
+      classpath:generalApplicationContext.xml
     </param-value>
   </context-param>
 

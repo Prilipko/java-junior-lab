@@ -30,20 +30,31 @@
     <!--<constructor-arg name="jdbcUrl" value="jdbc:mysql://localhost/mytest?user=root&amp;password=root"/>-->
     <!--</bean>-->
     <bean name="productDao" class="likeAShop.dao.impl.ProductDaoDS"/>
+
     <bean name="transactionManager" class="likeAShop.tx.impl.TransactionManagerImpl">
-        <constructor-arg ref="dataSourceDB"/>
+        <constructor-arg ref="pooledDataSource"/>
     </bean>
 
+    <!-- BoneCP configuration -->
+    <bean id="pooledDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="datasourceBean" ref="dataSourceDB"/>
+        <property name="maxConnectionsPerPartition" value="30"/>
+        <property name="minConnectionsPerPartition" value="10"/>
+        <property name="partitionCount" value="3"/>
+        <property name="acquireIncrement" value="5"/>
+        <property name="statementsCacheSize" value="100"/>
+    </bean>
     <!--<bean name="sessions" class="mySession.CustomHttpSessionOnClientRepository"/>-->
     <!--<bean name="sessions" class="mySession.CustomHttpSessionOnServerRepository"/>-->
-    <bean name="sessions" class="mySession.NativeHttpSessionRepository">
-        <constructor-arg name="ctx" ref="servletCtx"/>
-    </bean>
 
     <jdbc:embedded-database id="dataSourceDB" type="HSQL">
         <jdbc:script location="classpath:schema.sql"/>
         <jdbc:script location="classpath:insert-data.sql"/>
     </jdbc:embedded-database>
+
+    <bean name="sessions" class="mySession.NativeHttpSessionRepository">
+        <constructor-arg name="ctx" ref="servletCtx"/>
+    </bean>
 
     <!--<bean id="dataSourceDB" class="likeAShop.ds.MySqlDataSource">-->
         <!--<constructor-arg name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
