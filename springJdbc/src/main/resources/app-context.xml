@@ -14,23 +14,23 @@
     <context:component-scan base-package="jdbc_example"/>
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
-    <bean id="dataSourceDBCP2"
-    class="org.apache.commons.dbcp2.BasicDataSource"
-          destroy-method="close">
-        <property name="driverClassName" value="${jdbc.driverClassName}"/>
-        <property name="url" value="${jdbc.url}"/>
-        <property name="username" value="${jdbc.username}"/>
-        <property name="password" value="${jdbc.password}"/>
-    </bean>
+    <!--<bean id="dataSourceDBCP2"-->
+    <!--class="org.apache.commons.dbcp2.BasicDataSource"-->
+          <!--destroy-method="close">-->
+        <!--<property name="driverClassName" value="${jdbc.driverClassName}"/>-->
+        <!--<property name="url" value="${jdbc.url}"/>-->
+        <!--<property name="username" value="${jdbc.username}"/>-->
+        <!--<property name="password" value="${jdbc.password}"/>-->
+    <!--</bean>-->
 
-    <bean id="dataSourceC3P0"
-          class="com.mchange.v2.c3p0.ComboPooledDataSource"
-          destroy-method="close">
-        <property name="driverClass" value="${jdbc.driverClassName}"/>
-        <property name="jdbcUrl" value="${jdbc.url}"/>
-        <property name="user" value="${jdbc.username}"/>
-        <property name="password" value="${jdbc.password}"/>
-    </bean>
+    <!--<bean id="dataSourceC3P0"-->
+          <!--class="com.mchange.v2.c3p0.ComboPooledDataSource"-->
+          <!--destroy-method="close">-->
+        <!--<property name="driverClass" value="${jdbc.driverClassName}"/>-->
+        <!--<property name="jdbcUrl" value="${jdbc.url}"/>-->
+        <!--<property name="user" value="${jdbc.username}"/>-->
+        <!--<property name="password" value="${jdbc.password}"/>-->
+    <!--</bean>-->
 
     <bean id="dataSourceBoneCP"
           class="com.jolbox.bonecp.BoneCPDataSource"
@@ -41,14 +41,18 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
-    <jdbc:embedded-database id="dataSourceH2" type="H2">
-        <jdbc:script location="classpath:db/schema.sql"/>
-        <jdbc:script location="classpath:db/test-data.sql"/>
-    </jdbc:embedded-database>
+    <!--<jdbc:embedded-database id="dataSourceH2" type="H2">-->
+        <!--<jdbc:script location="classpath:db/schema.sql"/>-->
+        <!--<jdbc:script location="classpath:db/test-data.sql"/>-->
+    <!--</jdbc:embedded-database>-->
 
     <jdbc:initialize-database data-source="dataSourceBoneCP">
         <jdbc:script location="db/schema.sql"/>
         <jdbc:script location="db/test-data.sql"/>
     </jdbc:initialize-database>
+
+    <bean id="contactDao" class="jdbc_example.dao.impl.JdbcContactDao">
+        <property name="dataSource" ref="dataSourceBoneCP"/>
+    </bean>
 
 </beans>

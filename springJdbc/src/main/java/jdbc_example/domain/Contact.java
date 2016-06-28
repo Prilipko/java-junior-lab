@@ -35,7 +35,7 @@ public class Contact implements Serializable {
         this.lastName = lastName;
     }
 
-    public Date getBirthday() {
+    public Date getBirthdate() {
         return birthday;
     }
 
