@@ -32,7 +32,7 @@
         <!--<property name="password" value="${jdbc.password}"/>-->
     <!--</bean>-->
 
-    <bean id="dataSourceBoneCP"
+    <bean id="dataSource"
           class="com.jolbox.bonecp.BoneCPDataSource"
           destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
@@ -46,13 +46,13 @@
         <!--<jdbc:script location="classpath:db/test-data.sql"/>-->
     <!--</jdbc:embedded-database>-->
 
-    <jdbc:initialize-database data-source="dataSourceBoneCP">
+    <jdbc:initialize-database data-source="dataSource">
         <jdbc:script location="db/schema.sql"/>
         <jdbc:script location="db/test-data.sql"/>
     </jdbc:initialize-database>
 
-    <bean id="contactDao" class="jdbc_example.dao.impl.JdbcContactDao">
-        <property name="dataSource" ref="dataSourceBoneCP"/>
-    </bean>
+    <!--<bean id="contactDao" class="jdbc_example.dao.impl.JdbcContactDao">-->
+        <!--<property name="dataSource" ref="dataSourceBoneCP"/>-->
+    <!--</bean>-->
 
 </beans>

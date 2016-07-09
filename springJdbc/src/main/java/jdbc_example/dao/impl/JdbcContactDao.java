@@ -6,27 +6,28 @@ import jdbc_example.domain.ContactTelDetail;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class JdbcContactDao implements ContactDao, InitializingBean {
 
     private DataSource dataSource;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private JdbcTemplate jdbcTemplate;
-    private static final ContactResultSetExtractor CONTACT_RESULT_SET_EXTRACTOR = new ContactResultSetExtractor();
+    private static final ContactResultSetExtractor CONTACT_RESULT_SET_EXTRACTOR = ContactResultSetExtractor.getInstance();
+    private static final ContactParameterMapper CONTACT_PARAMETER_MAPPER = ContactParameterMapper.getInstance();
     private static final String INSERT_CONTACT_SQL = "INSERT INTO contact (FIRST_NAME, LAST_NAME, BIRTH_DATE) " +
             "VALUES (?, ?, ?)";
     private static final String INSERT_DETAIL_SQL = "INSERT INTO " +
@@ -64,7 +65,7 @@ public class JdbcContactDao implements ContactDao, InitializingBean {
                             contact.setId(resultSet.getLong("c.ID"));
                             contact.setFirstName(resultSet.getString("FIRST_NAME"));
                             contact.setLastName(resultSet.getString("LAST_NAME"));
-                            contact.setBirthday(resultSet.getDate("BIRTH_DATE"));
+                            contact.setBirthDate(resultSet.getDate("BIRTH_DATE"));
 
                             contactMap.put(id, contact);
                         } else {
@@ -116,7 +117,7 @@ public class JdbcContactDao implements ContactDao, InitializingBean {
                             contact.setId(id);
                             contact.setFirstName(resultSet.getString("FIRST_NAME"));
                             contact.setLastName(resultSet.getString("LAST_NAME"));
-                            contact.setBirthday(resultSet.getDate("BIRTH_DATE"));
+                            contact.setBirthDate(resultSet.getDate("BIRTH_DATE"));
                         }
                         ContactTelDetail contactTelDetail = new ContactTelDetail();
                         contactTelDetail.setId(resultSet.getLong("d.ID"));
@@ -174,12 +175,7 @@ public class JdbcContactDao implements ContactDao, InitializingBean {
 
     @Override
     public void update(Contact contact) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("id", contact.getId());
-        parameters.put("firstName", contact.getFirstName());
-        parameters.put("lastName", contact.getLastName());
-        parameters.put("birthDate", contact.getBirthdate());
-        namedParameterJdbcTemplate.update(UPDATE_SQL, parameters);
+        namedParameterJdbcTemplate.update(UPDATE_SQL, CONTACT_PARAMETER_MAPPER.getMap(contact));
     }
 
     @Override
@@ -202,21 +198,11 @@ public class JdbcContactDao implements ContactDao, InitializingBean {
         }
     }
 
+    @Resource(name = "dataSource")
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
         jdbcTemplate = new JdbcTemplate(dataSource);
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    static class ContactResultSetExtractor implements RowMapper<Contact> {
-        @Override
-        public Contact mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Contact contact = new Contact();
-            contact.setId(rs.getLong("ID"));
-            contact.setFirstName(rs.getString("FIRST_NAME"));
-            contact.setLastName(rs.getString("LAST_NAME"));
-            contact.setBirthday(rs.getDate("BIRTH_DATE"));
-            return contact;
-        }
-    }
 }

@@ -39,7 +39,7 @@ public class Contact implements Serializable {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthDate(Date birthday) {
         this.birthday = birthday;
     }
 
