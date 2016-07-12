@@ -8,7 +8,10 @@ import java.util.Set;
 @Entity
 @NamedQueries({
         @NamedQuery(name = "Contact.findAllWithDetail",
-        query = "select distinct c from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h")
+        query = "select distinct c from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h"),
+        @NamedQuery(name = "Contact.findOneById",
+        query = "select distinct c from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h " +
+                "where c.id =:id")
 })
 @Table(name = "CONTACT")
 public class Contact implements Serializable {

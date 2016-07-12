@@ -68,13 +68,16 @@ public class ContactTelDetail implements Serializable{
 
         ContactTelDetail that = (ContactTelDetail) o;
 
-        return !(id != null ? !id.equals(that.id) : that.id != null);
+        if (telType != null ? !telType.equals(that.telType) : that.telType != null) return false;
+        return telNumber != null ? telNumber.equals(that.telNumber) : that.telNumber == null;
 
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = telType != null ? telType.hashCode() : 0;
+        result = 31 * result + (telNumber != null ? telNumber.hashCode() : 0);
+        return result;
     }
 
     @Override
