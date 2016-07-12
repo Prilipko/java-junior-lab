@@ -84,7 +84,6 @@ public class ContactTelDetail implements Serializable{
                 ", telType='" + telType + '\'' +
                 ", telNumber='" + telNumber + '\'' +
                 ", version=" + version +
-                ", contact=" + contact +
                 '}';
     }
 }

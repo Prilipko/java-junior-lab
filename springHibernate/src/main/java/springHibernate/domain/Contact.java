@@ -6,6 +6,10 @@ import java.sql.Date;
 import java.util.Set;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Contact.findAllWithDetail",
+        query = "select distinct c from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h")
+})
 @Table(name = "CONTACT")
 public class Contact implements Serializable {
     private Long id;
@@ -122,8 +126,6 @@ public class Contact implements Serializable {
                 ", lastName='" + lastName + '\'' +
                 ", birthDate=" + birthDate +
                 ", version=" + version +
-                ", contactTelDetails=" + contactTelDetails +
-                ", hobbies=" + hobbies +
                 '}';
     }
 }

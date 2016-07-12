@@ -25,7 +25,7 @@ public class ContactDaoImpl implements ContactDao,InitializingBean {
 
     @Override
     public List<Contact> findAllWithDetail() {
-        return null;
+        return sessionFactory.getCurrentSession().createNamedQuery("Contact.findAllWithDetail").list();
     }
 
     @Override

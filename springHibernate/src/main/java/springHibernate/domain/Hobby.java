@@ -53,7 +53,6 @@ public class Hobby {
     public String toString() {
         return "Hobby{" +
                 "hobbyId='" + hobbyId + '\'' +
-                ", contacts=" + contacts +
                 '}';
     }
 }
