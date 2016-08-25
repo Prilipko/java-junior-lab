@@ -4,6 +4,7 @@
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/jdbc
@@ -11,7 +12,7 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <jdbc:embedded-database id="dataSource" type="H2">
         <jdbc:script location="classpath:META-INF/schema.sql"/>
@@ -39,10 +40,30 @@
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.use_sql_comments">true</prop>
+
+                <prop key="org.hibernate.envers.audit_table_suffix">_H</prop>
+                <prop key="org.hibernate.envers.revision_field_name">AUDIT_REVISION</prop>
+                <prop key="org.hibernate.envers.revision_type_field_name">ACTION_TYPE</prop>
+                <prop key="org.hibernate.envers.audit_strategy">
+                    org.hibernate.envers.strategy.ValidityAuditStrategy
+                </prop>
+                <prop key="org.hibernate.envers.audit_strategy_validity_end_rev_field_name">AUDIT_REVISION_END</prop>
+                <prop key="org.hibernate.envers.audit_strategy_validity_store_revend_timestamp">True</prop>
+                <prop key="org.hibernate.envers.audit_strategy_validity_revend_timestamp_field_name">
+                    AUDIT_REVISION_END_TS
+                </prop>
             </props>
         </property>
     </bean>
 
     <context:component-scan base-package="springJpa2"/>
+
+    <jpa:repositories base-package="springJpa2.springData.repository"
+                      entity-manager-factory-ref="emf"
+                      transaction-manager-ref="transactionManager"/>
+
+    <jpa:auditing auditor-aware-ref="auditorAwareBean"/>
+
+    <bean id="auditorAwareBean" class="springJpa2.springData.AuditorAwareBean"/>
 
 </beans>

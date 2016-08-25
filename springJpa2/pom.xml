@@ -15,6 +15,10 @@
         <h2.version>1.4.192</h2.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-compiler-plugin.language.level>1.8</maven-compiler-plugin.language.level>
+        <springframework.data.version>1.10.2.RELEASE</springframework.data.version>
+        <google.guava.version>19.0</google.guava.version>
+        <joda-time.version>2.9.4</joda-time.version>
+        <jadira.usertype.version>6.0.0.GA</jadira.usertype.version>
     </properties>
 
     <dependencies>
@@ -29,8 +33,18 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +57,26 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${springframework.data.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jadira.usertype</groupId>
+            <artifactId>usertype.core</artifactId>
+            <version>${jadira.usertype.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

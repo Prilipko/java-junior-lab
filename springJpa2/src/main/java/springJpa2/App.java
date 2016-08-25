@@ -70,7 +70,7 @@ public class App {
         service.findByCriteriaQuery(null, null).forEach(App::printContactWithDetails);
     }
 
-    private static void printContactWithDetails(Contact contact) {
+    public static void printContactWithDetails(Contact contact) {
         System.out.println("Contact: " + contact);
         System.out.println("Tells:");
         contact.getContactTelDetails().forEach(System.out::println);
