@@ -49,9 +49,12 @@
                       entity-manager-factory-ref="emf"
                       transaction-manager-ref="transactionManager"/>
 
-    <task:annotation-driven/>
+    <task:annotation-driven executor="myExecutor" />
     <!--<task:scheduled-tasks>-->
         <!--<task:scheduled ref="carService" method="updateCarAge" fixed-delay="2000"/>-->
     <!--</task:scheduled-tasks>-->
 
+    <!--<task:executor id="myExecutor" pool-size="2"/>-->
+    <!--<task:executor id="myExecutor" pool-size="0-2" />-->
+    <task:executor id="myExecutor" pool-size="0-2" keep-alive="5" />
 </beans>

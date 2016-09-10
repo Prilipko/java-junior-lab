@@ -28,7 +28,9 @@ public class CarService {
         return carRepository.save(car);
     }
 
-    @Scheduled(cron = "0 * * * * *")
+
+//    @Scheduled(cron = "0 * * * * *")
+    // uncomment for testing scheduling
     public void updateCarAge() {
         for (Car car : findAll()) {
             car.setAge(Years.yearsBetween(car.getManufactureDate(), DateTime.now()).getYears());
