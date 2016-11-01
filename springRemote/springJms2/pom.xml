@@ -9,10 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springJms</artifactId>
+    <artifactId>springJms2</artifactId>
 
     <properties>
-        <activemq-core.version>5.7.0</activemq-core.version>
+        <jms.version>2.0</jms.version>
+        <hornetq.version>2.4.7.Final</hornetq.version>
     </properties>
 
     <dependencies>
@@ -22,9 +23,15 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>${activemq-core.version}</version>
+            <groupId>javax.jms</groupId>
+            <artifactId>javax.jms-api</artifactId>
+            <version>${jms.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hornetq</groupId>
+            <artifactId>hornetq-jms-client</artifactId>
+            <version>${hornetq.version}</version>
         </dependency>
     </dependencies>
+
 </project>
