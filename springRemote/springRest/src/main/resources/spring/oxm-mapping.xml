@@ -1,0 +1,34 @@
+<mapping xmlns="http://castor.exolab.org/">
+
+    <class name="springRest.domain.Contacts" >
+        <field name="contacts" type="contactService.domain.Contact" collection="arraylist">
+            <bind-xml name="contact"/>
+        </field>
+    </class>
+    
+    <class name="contactService.domain.Contact" identity="id">
+
+        <map-to xml="contact"/>
+
+        <field name="id" type="long">
+            <bind-xml name="id" node="element"/>
+        </field>
+
+        <field name="version" type="long">
+            <bind-xml name="version" node="element"/>
+        </field>
+
+        <field name="name" type="string">
+            <bind-xml name="name" node="element"/>
+        </field>
+
+        <field name="birthDate" type="string" handler="dateHandler">
+            <bind-xml name="birthDate" node="element"/>
+        </field>
+
+    </class>
+
+    <field-handler name="dateHandler" class="springRest.handler.LocalDateTimeFieldHandler">
+        <param name="format" value="yyyy-MM-dd"/>
+    </field-handler>
+</mapping>

@@ -16,7 +16,7 @@
     </modules>
 
     <properties>
-        <spring.version>4.3.2.RELEASE</spring.version>
+        <spring.version>4.3.5.RELEASE</spring.version>
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <maven-compiler-plugin.language.level>1.8</maven-compiler-plugin.language.level>
         <google.guava.version>19.0</google.guava.version>
