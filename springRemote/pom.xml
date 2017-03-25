@@ -13,6 +13,7 @@
         <module>springJms</module>
         <module>springJms2</module>
         <module>springRest</module>
+        <module>springAmqp</module>
     </modules>
 
     <properties>
