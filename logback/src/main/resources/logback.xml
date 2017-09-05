@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!--<customFields>{"logmaticKey":"<your_api_key>"}</customFields>-->
+        </encoder>
+    </appender>
+
+    <!--<appender name="JSON_TCP" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+        <!--<remoteHost>api.logmatic.io</remoteHost>-->
+        <!--<port>10514</port>-->
+        <!--<keepAliveDuration>1 minute</keepAliveDuration>-->
+        <!--<encoder class="net.logstash.logback.encoder.LogstashEncoder">-->
+            <!--<customFields>{"logmaticKey":"<your_api_key>"}</customFields>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+    <root level="debug">
+        <!--<appender-ref ref="JSON_TCP" />-->
+        <appender-ref ref="JSON" />
+    </root>
+
+
+
+
+    <!--<appender name="fileAppender" class="ch.qos.logback.core.ConsoleAppender">-->
+        <!--<file>/myLogFile.log</file>-->
+        <!--<append>true</append>-->
+        <!--<encoder>-->
+            <!--<pattern>%d [%thread] %-5level  %logger{35} - %msg%n</pattern>-->
+        <!--</encoder>-->
+    <!--</appender>-->
+
+    <!--<root level="TRACE">-->
+        <!--<appender-ref ref="fileAppender" />-->
+    <!--</root>-->
+</configuration>
