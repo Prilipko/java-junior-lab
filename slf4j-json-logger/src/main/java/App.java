@@ -20,9 +20,11 @@ public class App {
         A a = new A(1, 2);
         MDC.put("name", "Zaharov");
         MDC.put("A", a.toString());
+        final Exception e = new Exception("Any error");
         LOG.debug()
            .message("Hello world")
            .field("name", "Zaharov")
+           .exception("thrown", e)
            .field("A", a)
            .log();
         MDC.clear();

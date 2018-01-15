@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration packages="customLayout" status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <JSONLayout complete="false"
-                        compact="false"
-                        properties="true"
-                        propertiesAsList="false"
-                        locationInfo="false"
-                        includeStacktrace="true"
-            />
+            <NewCustLayout/>
+            <!--<JSONLayout complete="false"-->
+            <!--compact="false"-->
+            <!--properties="true"-->
+            <!--propertiesAsList="false"-->
+            <!--locationInfo="false"-->
+            <!--includeStacktrace="true"-->
+            <!--/>-->
         </Console>
     </Appenders>
     <Loggers>

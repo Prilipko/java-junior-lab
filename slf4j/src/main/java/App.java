@@ -21,6 +21,8 @@ public class App {
         MDC.put("A", a.toString());
         LOG.debug("Hello world {}", a, a);
         MDC.clear();
+        final Exception e = new Exception("Any error");
+        LOG.error("It's {}", e.getMessage(), e);
     }
 
     private static class A {

@@ -18,6 +18,8 @@ public class App1 {
         MDC.put("A", a.toString());
         LOG.debug("Hello world {}", a);
         MDC.clear();
+        final Exception e = new Exception("Any error");
+        LOG.debug("Hello world {}", e.getMessage(), e);
     }
 
     private static class A {
