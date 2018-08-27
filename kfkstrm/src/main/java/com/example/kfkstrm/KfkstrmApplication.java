@@ -150,6 +150,7 @@ interface KfkBinding {
     String ROOM_OUT = "rout";
 
     String VISIT_IN = "vin";
+    String VISIT_IN_PROC = "vinproc";
     String VISIT_EX_IN = "vxin";
     String STUDENT_IN = "sin";
     String ROOM_IN = "rin";
@@ -168,6 +169,9 @@ interface KfkBinding {
 
     @Input(VISIT_IN)
     KStream<Long, VisitEvent> visitIn();
+
+    @Input(VISIT_IN_PROC)
+    KStream<Long, VisitEvent> visitInProc();
 
     @Input(VISIT_EX_IN)
     KStream<Long, VisitEventEx> visitExIn();

@@ -42,10 +42,10 @@ public class VisitToExProcessor {
 //                                   (visit, student) -> new VisitEventEx(visit.id, student, new Room(), visit.duration,
 //                                                                        new VisitEventEx()));
 
-    @StreamListener(KfkBinding.VISIT_IN)
+    @StreamListener(KfkBinding.VISIT_IN_PROC)
     @SendTo(KfkBinding.VISIT_EX_OUT)
     public KStream<Long, VisitEventEx> process(
-            @Input(KfkBinding.VISIT_IN) KStream<Long, VisitEvent> visits
+            @Input(KfkBinding.VISIT_IN_PROC) KStream<Long, VisitEvent> visits
                                               ) {
         return visits.map((key, value) -> {
             log.info("convert: {}", value);
