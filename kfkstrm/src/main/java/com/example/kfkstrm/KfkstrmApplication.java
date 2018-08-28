@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,15 +19,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.binder.kafka.streams.GenericKeyValueSerdeResolver;
 import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStreamsBinderConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -51,31 +47,18 @@ public class KfkstrmApplication {
         return new SerdeResolverBeanFactoryPostProcessor();
     }
 
-//    @Bean
-//    public GlobalKTable<Long, Student> globalKTable() {
-//        final JsonSerde<Student> studentJsonSerde = new JsonSerde<>(Student.class);
-//
-//        final StreamsBuilder builder = new StreamsBuilder();
-//        return builder.globalTable("sin", Materialized.<Long, Student, KeyValueStore<Bytes, byte[]>>as("sstore")
-//                .withKeySerde(Serdes.Long())
-//                .withValueSerde(studentJsonSerde));
-////        return new SerdeResolverBeanFactoryPostProcessor();
-//    }
-
     @Component
     public static class VisitEventSource implements ApplicationRunner {
 
         private final MessageChannel visitOut;
         private final MessageChannel studentOut;
         private final MessageChannel roomOut;
-//        private final MessageChannel visitExOut;
 
         public VisitEventSource(KfkBinding binding) {
 
             visitOut = binding.visitOut();
             studentOut = binding.studentOut();
             roomOut = binding.roomOut();
-//            visitExOut = binding.visitExOut();
         }
 
         @Override
@@ -155,6 +138,12 @@ interface KfkBinding {
     String STUDENT_IN = "sin";
     String ROOM_IN = "rin";
 
+    String VSR = "vsr";
+    String VRR = "vrr";
+    String VVR = "vvr";
+
+    String VXT_IN = "vxtin";
+
     @Output(VISIT_OUT)
     MessageChannel visitOut();
 
@@ -181,5 +170,17 @@ interface KfkBinding {
 
     @Input(ROOM_IN)
     KTable<Long, Room> roomIn();
+
+    @Input(VSR)
+    KTable<Long, VisitEventEx> vsr();
+
+    @Input(VRR)
+    KTable<Long, VisitEventEx> vrr();
+
+    @Input(VVR)
+    KTable<Long, VisitEventEx> vvr();
+
+    @Input(VXT_IN)
+    KTable<Long, VisitEventEx> vxtin();
 }
 

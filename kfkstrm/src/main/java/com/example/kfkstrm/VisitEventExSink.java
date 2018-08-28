@@ -10,12 +10,7 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
-/**
- * TODO: Change class description
- *
- * @author oleksandr.prylypko (oprylypk)
- * @since 0.11
- */
+
 @Component
 @Slf4j
 public class VisitEventExSink {
