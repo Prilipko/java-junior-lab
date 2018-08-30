@@ -1,7 +1,10 @@
 package com.example.kfkstrm;
 
+import static org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -9,19 +12,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.cloud.stream.binder.kafka.streams.GenericKeyValueSerdeResolver;
 import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStreamsBinderConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
+import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -31,7 +37,20 @@ import org.springframework.stereotype.Component;
 @SpringBootApplication
 @EnableBinding(KfkBinding.class)
 @Slf4j
+@EnableKafka
+@EnableKafkaStreams
 public class KfkstrmApplication {
+
+    @Bean(name = DEFAULT_STREAMS_CONFIG_BEAN_NAME)
+    public StreamsConfig kStreamsConfigs() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "testStreams");
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, WallclockTimestampExtractor.class.getName());
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        return new StreamsConfig(props);
+    }
 
     @Bean
     public GenericKeyValueSerdeResolver genericKeyValueSerdeResolver(
@@ -147,8 +166,8 @@ interface KfkBinding {
     @Output(VISIT_OUT)
     MessageChannel visitOut();
 
-    @Output(VISIT_EX_OUT)
-    KStream<Long, VisitEventEx> visitExOut();
+//    @Output(VISIT_EX_OUT)
+//    KStream<Long, VisitEventEx> visitExOut();
 
     @Output(STUDENT_OUT)
     MessageChannel studentOut();
@@ -156,31 +175,31 @@ interface KfkBinding {
     @Output(ROOM_OUT)
     MessageChannel roomOut();
 
-    @Input(VISIT_IN)
-    KStream<Long, VisitEvent> visitIn();
-
-    @Input(VISIT_IN_PROC)
-    KStream<Long, VisitEvent> visitInProc();
-
-    @Input(VISIT_EX_IN)
-    KStream<Long, VisitEventEx> visitExIn();
-
-    @Input(STUDENT_IN)
-    KTable<Long, Student> studentIn();
-
-    @Input(ROOM_IN)
-    KTable<Long, Room> roomIn();
-
-    @Input(VSR)
-    KTable<Long, VisitEventEx> vsr();
-
-    @Input(VRR)
-    KTable<Long, VisitEventEx> vrr();
-
-    @Input(VVR)
-    KTable<Long, VisitEventEx> vvr();
-
-    @Input(VXT_IN)
-    KTable<Long, VisitEventEx> vxtin();
+//    @Input(VISIT_IN)
+//    KStream<Long, VisitEvent> visitIn();
+//
+//    @Input(VISIT_IN_PROC)
+//    KStream<Long, VisitEvent> visitInProc();
+//
+//    @Input(VISIT_EX_IN)
+//    KStream<Long, VisitEventEx> visitExIn();
+//
+//    @Input(STUDENT_IN)
+//    KTable<Long, Student> studentIn();
+//
+//    @Input(ROOM_IN)
+//    KTable<Long, Room> roomIn();
+//
+//    @Input(VSR)
+//    KTable<Long, VisitEventEx> vsr();
+//
+//    @Input(VRR)
+//    KTable<Long, VisitEventEx> vrr();
+//
+//    @Input(VVR)
+//    KTable<Long, VisitEventEx> vvr();
+//
+//    @Input(VXT_IN)
+//    KTable<Long, VisitEventEx> vxtin();
 }
 

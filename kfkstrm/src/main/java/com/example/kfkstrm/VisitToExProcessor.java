@@ -8,18 +8,15 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.kafka.support.serializer.JsonSerde;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Component;
 
 
-@Component
+//@Component
 @Slf4j
 public class VisitToExProcessor {
 
-    @StreamListener
-    @SendTo(KfkBinding.VISIT_EX_OUT)
+//    @StreamListener
+//    @SendTo(KfkBinding.VISIT_EX_OUT)
     public KStream<Long, VisitEventEx> process(
             @Input(KfkBinding.VISIT_IN_PROC) KStream<Long, VisitEvent> visitStream,
             @Input(KfkBinding.STUDENT_IN) KTable<Long, Student> students,

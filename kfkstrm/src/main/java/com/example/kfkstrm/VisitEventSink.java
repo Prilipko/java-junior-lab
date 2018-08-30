@@ -7,8 +7,6 @@ package com.example.kfkstrm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.KStream;
 import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.stereotype.Component;
 
 /**
  * TODO: Change class description
@@ -16,11 +14,11 @@ import org.springframework.stereotype.Component;
  * @author oleksandr.prylypko (oprylypk)
  * @since 0.11
  */
-@Component
+//@Component
 @Slf4j
 public class VisitEventSink {
 
-    @StreamListener(KfkBinding.VISIT_IN)
+//    @StreamListener(KfkBinding.VISIT_IN)
     public void process(@Input(KfkBinding.VISIT_IN) KStream<Long, VisitEvent> events) {
         events.peek((key, value) -> log.info("value {}", value));
     }
