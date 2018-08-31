@@ -27,7 +27,6 @@ import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStr
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -72,12 +71,14 @@ public class KfkstrmApplication {
         private final MessageChannel visitOut;
         private final MessageChannel studentOut;
         private final MessageChannel roomOut;
+        private final MessageChannel studentGroupOut;
 
         public VisitEventSource(KfkBinding binding) {
 
             visitOut = binding.visitOut();
             studentOut = binding.studentOut();
             roomOut = binding.roomOut();
+            studentGroupOut = binding.studentGroupOut();
         }
 
         @Override
@@ -85,11 +86,17 @@ public class KfkstrmApplication {
             List<Long> visitIds = new ArrayList<>();
             visitIds.add(null);
             List<Student> students = Arrays.asList(
-                    new Student(0L, "Stud#1"),
-                    new Student(1L, "Stud#2"),
-                    new Student(2L, "Stud#3"),
-                    new Student(3L, "Stud#4"),
-                    new Student(4L, "Stud#5"));
+                    new Student(0L, "Stud#1", 18, 170),
+                    new Student(1L, "Stud#2", 19, 171),
+                    new Student(2L, "Stud#3", 20, 172),
+                    new Student(3L, "Stud#4", 21, 173),
+                    new Student(4L, "Stud#5", 22, 174));
+
+            List<StudentGroupQ> studentGroups = Arrays.asList(
+                    new StudentGroupQ(0L, 18, 20, 170, 173),
+                    new StudentGroupQ(1L, 18, 20, 173, 175),
+                    new StudentGroupQ(2L, 20, 23, 170, 173),
+                    new StudentGroupQ(3L, 20, 23, 173, 175));
 
             List<Room> rooms = Arrays.asList(
                     new Room(0L, "Room#1"),
@@ -109,6 +116,12 @@ public class KfkstrmApplication {
                                             .setHeader(KafkaHeaders.MESSAGE_KEY, room.getId())
                                             .build())
                  .forEach(roomOut::send);
+
+            studentGroups.stream()
+                         .map(groupQ -> MessageBuilder.withPayload(groupQ)
+                                                      .setHeader(KafkaHeaders.MESSAGE_KEY, groupQ.getId())
+                                                      .build())
+                         .forEach(studentGroupOut::send);
 
             final Random random = new Random();
             Runnable runnable = () -> {
@@ -150,6 +163,7 @@ interface KfkBinding {
     String VISIT_EX_OUT = "vxout";
     String STUDENT_OUT = "sout";
     String ROOM_OUT = "rout";
+    String STUDENT_GROUP_OUT = "sgout";
 
     String VISIT_IN = "vin";
     String VISIT_IN_PROC = "vinproc";
@@ -171,6 +185,9 @@ interface KfkBinding {
 
     @Output(STUDENT_OUT)
     MessageChannel studentOut();
+
+    @Output(STUDENT_GROUP_OUT)
+    MessageChannel studentGroupOut();
 
     @Output(ROOM_OUT)
     MessageChannel roomOut();
