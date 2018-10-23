@@ -1,11 +1,11 @@
 package com.example.kafkaagr;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
@@ -15,5 +15,8 @@ public class ExtendedGroup {
     private String id;
     private int maxScore;
     private int minScore;
+    private int oldMaxScore;
+    private int oldMinScore;
     Set<Student> students;
+    Set<Student> oldStudents;
 }

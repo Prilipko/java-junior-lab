@@ -1,7 +1,8 @@
-package com.example.kafkaagr;
+package com.example.two_ktbl;
 
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,9 +11,10 @@ import org.springframework.cloud.stream.binder.kafka.streams.GenericKeyValueSerd
 import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStreamsBinderConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-@EnableBinding(Binding.class)
 @SpringBootApplication
-public class KafkaAgrApplication {
+@EnableBinding(Binding.class)
+@Slf4j
+public class TwoKtblApplication {
 
     @Bean
     public GenericKeyValueSerdeResolver genericKeyValueSerdeResolver(
@@ -20,7 +22,7 @@ public class KafkaAgrApplication {
             final KafkaStreamsBinderConfigurationProperties kafkaStreamsBinderConfigurationProperties) {
 
         return new GenericKeyValueSerdeResolver(streamConfigGlobalProperties,
-                kafkaStreamsBinderConfigurationProperties);
+                                                kafkaStreamsBinderConfigurationProperties);
     }
 
     @Bean
@@ -29,6 +31,6 @@ public class KafkaAgrApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(KafkaAgrApplication.class, args);
+        SpringApplication.run(TwoKtblApplication.class, args);
     }
 }
