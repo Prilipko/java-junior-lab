@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="k-log">
+    <Properties>
+        <Property name="log-path">logs</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- main log file, provide overall system behavior -->
+        <RollingFile name="service"
+                     fileName="${log-path}/service.log"
+                     filePattern="${log-path}/service-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{ISO8601} %level{length=1} [%t] [%X{X-B3-TraceId},%X{X-B3-SpanId}] %c{1.} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="service" />
+        </Root>
+    </Loggers>
+</Configuration>

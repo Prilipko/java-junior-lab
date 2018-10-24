@@ -1,5 +1,6 @@
 package com.example.kafkaagr;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,6 @@ public class ExtendedGroup {
     private int minScore;
     private int oldMaxScore;
     private int oldMinScore;
-    Set<Student> students;
-    Set<Student> oldStudents;
+    Set<Student> students = new HashSet<>();
+    Set<Student> oldStudents = new HashSet<>();;
 }

@@ -1,6 +1,7 @@
 package com.example.kafkaagr;
 
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
 import org.springframework.cloud.stream.annotation.Input;
 
 public interface Binding {
@@ -22,6 +23,13 @@ public interface Binding {
 
     public final String CONNECTIONS_TOPIC = "connections";
 
+    public final String EXTENDED_GROUPS_TOPIC = "extended-groups";
+    public final String EXTENDED_STUDENTS_TOPIC = "extended-students";
+
+
+    public final String CONNECTIONS_GROUPS_PROCESSOR_SINK = "connections-groups-processor";
+    public final String CONNECTIONS_STUDENTS_PROCESSOR_SINK = "connections-students-processor";
+
     @Input(GROUPS_SOURCE)
     KStream<String, Group> groups();
 
@@ -29,7 +37,16 @@ public interface Binding {
     KStream<String, Student> students();
 
     @Input(GROUPS_STORE_SINK)
-    KStream<String, Group> groupsStore();
+    KTable<String, Group> groupsStore();
+
+    @Input(STUDENTS_STORE_SINK)
+    KTable<String, ExtendedStudent> studentsStore();
+
+    @Input(CONNECTIONS_GROUPS_PROCESSOR_SINK)
+    KTable<StuGro, ExtendedStudent> studentToExtendedGroup();
+
+    @Input(CONNECTIONS_STUDENTS_PROCESSOR_SINK)
+    KTable<StuGro, ExtendedStudent> studentToExtendedStudent();
 
 //    @Output(STUDENTS_SINK)
 //    KTable<Long, ExtendedStudent> extendedStudents();

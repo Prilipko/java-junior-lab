@@ -4,6 +4,8 @@
 
 package org.springframework.cloud.stream.binder.kafka.streams;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -14,8 +16,6 @@ import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStr
 import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStreamsConsumerProperties;
 import org.springframework.cloud.stream.binder.kafka.streams.properties.KafkaStreamsProducerProperties;
 import org.springframework.kafka.support.serializer.JsonSerde;
-
-import java.util.Map;
 
 /**
  * KeyValueSerdeResolver with generic support for {@link JsonSerde}
@@ -34,6 +34,13 @@ public class GenericKeyValueSerdeResolver extends KeyValueSerdeResolver {
 
         this.streamConfigGlobalProperties = streamConfigGlobalProperties;
         this.binderConfigurationProperties = binderConfigurationProperties;
+    }
+
+    @Override
+    public Serde<?> getInboundKeySerde(final KafkaStreamsConsumerProperties extendedConsumerProperties) {
+        String keySerdeString = extendedConsumerProperties.getKeySerde();
+
+        return getKeySerde(keySerdeString);
     }
 
     /**
@@ -80,6 +87,11 @@ public class GenericKeyValueSerdeResolver extends KeyValueSerdeResolver {
         }
     }
 
+    @Override
+    public Serde<?> getOuboundKeySerde(final KafkaStreamsProducerProperties properties) {
+        return getKeySerde(properties.getKeySerde());
+    }
+
     /**
      * Provides Value Serde with generic class support
      *
@@ -105,6 +117,32 @@ public class GenericKeyValueSerdeResolver extends KeyValueSerdeResolver {
         }
 
         return valueSerde;
+    }
+
+    private Serde<?> getKeySerde(String keySerdeString) {
+        Serde<?> keySerde;
+        try {
+            if (org.springframework.util.StringUtils.hasText(keySerdeString)) {
+                final String genericClassName = getGenericClassName(keySerdeString);
+
+                if (StringUtils.isNotBlank(genericClassName)) {
+                    final String className = getClassNameWithoutGeneric(keySerdeString);
+                    keySerde = Utils.newParameterizedInstance(className, Class.class, Class.forName(genericClassName));
+                } else {
+                    keySerde = Utils.newInstance(keySerdeString, Serde.class);
+                }
+            }
+            else {
+                keySerde = this.binderConfigurationProperties.getConfiguration().containsKey("default.key.serde") ?
+                        Utils.newInstance(this.binderConfigurationProperties.getConfiguration().get("default.key.serde"), Serde.class) : Serdes.ByteArray();
+            }
+            keySerde.configure(streamConfigGlobalProperties, true);
+
+        }
+        catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Serde class not found: ", e);
+        }
+        return keySerde;
     }
 
     private String getGenericClassName(final String valueSerdeString) {
