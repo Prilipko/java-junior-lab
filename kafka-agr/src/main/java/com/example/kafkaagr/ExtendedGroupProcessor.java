@@ -61,3 +61,4 @@ public class ExtendedGroupProcessor {
 
 }
 //stud1~{"name":"stud1","score":10}
+//gr1~{"id":"gr1","maxScore":20,"minScore":0,"oldMaxScore":0,"oldMinScore":0}

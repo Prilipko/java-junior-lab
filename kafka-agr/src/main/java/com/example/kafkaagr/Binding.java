@@ -40,7 +40,7 @@ public interface Binding {
     KTable<String, Group> groupsStore();
 
     @Input(STUDENTS_STORE_SINK)
-    KTable<String, ExtendedStudent> studentsStore();
+    KTable<String, Student> studentsStore();
 
     @Input(CONNECTIONS_GROUPS_PROCESSOR_SINK)
     KTable<StuGro, ExtendedStudent> studentToExtendedGroup();

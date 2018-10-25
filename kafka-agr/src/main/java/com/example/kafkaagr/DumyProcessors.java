@@ -6,9 +6,6 @@ package com.example.kafkaagr;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.streams.kstream.KTable;
-import org.springframework.cloud.stream.annotation.Input;
-import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,14 +19,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class DumyProcessors {
 
-    @StreamListener
-    public void groupsStoreSink(
-            @Input(Binding.GROUPS_STORE_SINK) final KTable<String, Group> ignore) {
-    }
-
-    @StreamListener
-    public void studentsStoreSink(
-            @Input(Binding.STUDENTS_STORE_SINK) final KTable<String, Student> ignore) {
-    }
+//    @StreamListener
+//    public void groupsStoreSink(
+//            @Input(Binding.GROUPS_STORE_SINK) final KTable<String, Group> ignore) {
+//    }
+//
+//    @StreamListener
+//    public void studentsStoreSink(
+//            @Input(Binding.STUDENTS_STORE_SINK) final KTable<String, Student> ignore) {
+//    }
 
 }

@@ -1,24 +1,32 @@
 package com.example.kafkaagr;
 
-import java.util.Collections;
+import static java.util.Collections.singletonMap;
+
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class GroupProcessor {
 
-    @NonNull
     private final MyService myService;
+    private final JsonSerde<StuGro> stuGroSerde;
+    private final JsonSerde<ExtendedStudent> extendedStudentSerde;
+
+    public GroupProcessor(final MyService myService) {
+        this.myService = myService;
+        stuGroSerde = new JsonSerde<>(StuGro.class);
+        extendedStudentSerde = new JsonSerde<>(ExtendedStudent.class);
+    }
 
     @StreamListener
 //    @SendTo(Binding.STUDENTS_SINK)
@@ -35,62 +43,46 @@ public class GroupProcessor {
                                                                                           group.getOldMaxScore()))
                                                .build())
               .flatMapValues(value -> {
-                  Set<ExtendedGroup> groupSet = new HashSet<>();
+                  Set<ExtendedStudent> newMembers = new HashSet<>();
                   for (Student student : value.getStudents()) {
-                      groupSet.add(value.toBuilder().students(Collections.singleton(student)).build());
+                      newMembers.add(ExtendedStudent
+                                             .builder()
+                                             .name(student.getName())
+                                             .score(student.getScore())
+                                             .groupsMatch(singletonMap(value.getId(),
+                                                                       Group.builder()
+                                                                            .id(value.getId())
+                                                                            .maxScore(value.getMaxScore())
+                                                                            .minScore(value.getMinScore())
+                                                                            .oldMaxScore(value.getOldMaxScore())
+                                                                            .oldMinScore(value.getOldMinScore())
+                                                                            .build()))
+                                             .build());
                   }
-                  Set<ExtendedGroup> oldGroupSet = new HashSet<>();
+                  Set<ExtendedStudent> oldMembers = new HashSet<>();
                   for (Student student : value.getOldStudents()) {
-                      oldGroupSet.add(value.toBuilder().students(Collections.singleton(student)).build());
+                      oldMembers.add(ExtendedStudent
+                                             .builder()
+                                             .name(student.getName())
+                                             .score(student.getScore())
+                                             .groupsMatch(singletonMap(value.getId(), null))
+                                             .build());
                   }
-                  oldGroupSet.removeAll(groupSet);
-                  groupSet.addAll(oldGroupSet);
-                  return groupSet;
+                  oldMembers.removeAll(newMembers);
+                  newMembers.addAll(oldMembers);
+                  return newMembers;
               })
-              .selectKey((key, value) -> {
-                  if (!value.getOldStudents().isEmpty()) {
-                      Student student = value.getOldStudents().iterator().next();
-                      return StuGro.builder().id(key).name(student.getName()).build();
-                  }
-                  Student student = value.getStudents().iterator().next();
-                  return StuGro.builder().id(key).name(student.getName()).build();
-
-              })
-              .mapValues(value -> value.getOldStudents().isEmpty()
+              .selectKey((key, value) -> StuGro.builder()
+                                               .id(value.getGroupsMatch()
+                                                        .keySet()
+                                                        .iterator()
+                                                        .next())
+                                               .name(value.getName())
+                                               .build())
+              .mapValues(value -> Objects.nonNull(value.getGroupsMatch().values().iterator().next())
                       ? value
                       : null)
-              .to(Binding.CONNECTIONS_TOPIC);
-//              .filter((key, value) -> !value.getStudents().isEmpty())
-//              .flatMapValues(extendedGroup -> {
-//                  Set<ExtendedGroup> extendedGroups = new HashSet<>(extendedGroup.getStudents().size());
-//                  for (Student student : extendedGroup.getStudents()) {
-//                      extendedGroups.add(extendedGroup.toBuilder()
-//                                                      .students(Collections.singleton(student))
-//                                                      .build());
-//                  }
-//                  return extendedGroups;
-//              }).
-//              .groupBy()
-//              .selectKey((key, value) -> value.getStudents().iterator().next().getName())
-//              .groupByKey().aggregate()
-//              .groupBy((key, value) -> {
-//                  Student student = value.getStudents().iterator().next();
-//                  Group group = Group.builder()
-//                                     .id(value.getId())
-//                                     .maxScore(value.getMaxScore())
-//                                     .minScore(value.getMinScore())
-//                                     .build();
-//                  ExtendedStudent extendedStudent = ExtendedStudent.builder()
-//                                                                   .name(student.getName())
-//                                                                   .score(student.getScore())
-//                                                                   .groups(Collections.singleton(group))
-//                                                                   .build();
-//
-//                  return new KeyValue<>(student.getName(), extendedStudent);
-//              });
-
-
-
+              .to(Binding.CONNECTIONS_TOPIC, Produced.with(stuGroSerde, extendedStudentSerde));
     }
 
 }
